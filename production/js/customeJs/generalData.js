@@ -50,6 +50,31 @@ $(function () {
       $("#expected-prem-prob").html((sumProb / r.length).toFixed(2) + "%");
 
     })
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["gross_perimum", "t_permimum"])])
+    .then(function (r) {
+      var sumGross = 0;
+      var sumNet = 0;
+      r.forEach(function (p) {
+        sumGross += p.gross_perimum;
+        sumNet += p.t_permimum;
+      });
+      $("#premium-written-gross").html(sumGross.toFixed(2) + " $");
+      $("#premium-written-net").html(sumNet.toFixed(2) + " $");
+
+    })
+  ajaxRequest(uid, password, "insurance.claim", "search_read", [], [new Map("fields", ["totalsettled", "total_paid_amount"])])
+    .then(function (r) {
+      var sumTotalSettled = 0;
+      var sumPaid = 0;
+      console.log(r)
+      r.forEach(function (c) {
+        sumTotalSettled += c.totalsettled;
+        sumPaid += c.total_paid_amount;
+      });
+      $("#claim-settled").html(sumTotalSettled.toFixed(2) + " $");
+      $("#claim-paid").html(sumPaid.toFixed(2) + " $");
+
+    })
   ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start", "display_time", "stop_datetime", "attendee_ids", "location", "duration"]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
     .then(function (res) {
       var tableContent = "";
@@ -127,6 +152,34 @@ $(function () {
         index++;
       })
       $("#claims").html(tableContent)
+    });
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["insurance_type", "line_of_bussines", "company", "product_policy", "customer", "std_id", "edit_number", "renwal_check", "issue_date", "start_date", "end_date", "gross_perimum", "t_permimum"]), new Map("limit", [5]), new Map("order", ["gross_perimum desc"])])
+    .then(function (res) {
+      var tableContent = "";
+      var index = 0
+      res.forEach(function (p) {
+        if (index % 2 == 0)
+          tableContent += '<tr class="even pointer">';
+        else
+          tableContent += '<tr class="odd pointer">'
+        var ch = p.renwal_check == false ? "" : "checked";
+        tableContent += "<td>" + p.insurance_type + "</td>" +
+          "<td>" + p.line_of_bussines[1] + "</td>" +
+          "<td>" + p.company[1] + "</td>" +
+          "<td>" + p.product_policy[1] + "</td>" +
+          "<td>" + p.customer[1] + "</td>" +
+          "<td>" + p.std_id + "</td>" +
+          "<td>" + p.edit_number + "</td>" +
+          "<td> <input type='checkbox'" + ch + "></td>" +
+          "<td>" + p.issue_date + "</td>" +
+          "<td>" + p.start_date + "</td>" +
+          "<td>" + p.end_date + "</td>" +
+          "<td>" + p.gross_perimum + "</td>" +
+          "<td>" + p.t_permimum + "</td>" +
+          '</tr>';
+        index++;
+      })
+      $("#policyes").html(tableContent)
     });
   ajaxRequest(uid, password, "hr.employee", "search_count", domains, maps)
     // for return result correctly
