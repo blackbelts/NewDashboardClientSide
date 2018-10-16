@@ -33,15 +33,104 @@ $(function () {
    */
   var maps = [];
   // add domain object like object Domain ProtoType to domains list
-  domains.push(new Domain("agent", "%3D", "1"))
+  domains.push(new Domain("active", "%3D", "true"))
   /*
    *this function make ajax request to get number of agents from server
    * write it in html file 
    */
-  ajaxRequest(uid, password, "res.partner", "search_count", domains, maps)
+  ajaxRequest(uid, password, "crm.lead", "search_read", [new Domain("active", "%3D", "true")], [new Map("fields", ["planned_revenue", "probability"])])
+    .then(function (r) {
+      var sumExpected = 0;
+      var sumProb = 0;
+      r.forEach(function (opp) {
+        sumExpected += opp.planned_revenue;
+        sumProb += opp.probability;
+      });
+      $("#expected-prem-num").html(sumExpected.toFixed(2));
+      $("#expected-prem-prob").html((sumProb / r.length).toFixed(2) + "%");
+
+    })
+  ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start", "display_time", "stop_datetime", "attendee_ids", "location", "duration"]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
+    .then(function (res) {
+      var tableContent = "";
+      var index = 0;
+      res.forEach(function (meeting) {
+        if (index % 2 == 0)
+          tableContent += '<tr class="even pointer">';
+        else
+          tableContent += '<tr class="odd pointer">'
+        tableContent += "<td>" + meeting.name + "</td>" +
+          "<td>" + meeting.display_start + "</td>" +
+          "<td>" + meeting.stop_datetime + "</td>" +
+          "<td>" + meeting.attendee_ids.length + " record" + "</td>" +
+          "<td>" + meeting.location + "</td>";
+        var duration = ""
+        if (Math.floor(meeting.duration).toString().length == 1)
+          duration += "0" + Math.floor(meeting.duration) + ":";
+        else
+          duration += Math.floor(meeting.duration) + ":";
+
+        if (((meeting.duration - Math.floor(meeting.duration)) * 60).toString().length == 1)
+          duration += "0" + (Math.ceil((meeting.duration - Math.floor(meeting.duration)) * 60));
+        else
+          duration += (Math.ceil((meeting.duration - Math.floor(meeting.duration)) * 60));
+        tableContent += "<td>" + duration + "</td>" + '</tr>';
+      })
+      index++;
+      $("#meetings").html(tableContent);
+    });
+  ajaxRequest(uid, password, "crm.lead", "search_read", [new Domain("type", "%3D", "opportunity"), new Domain("active", "%3D", "true")], [new Map("fields", ["display_name", "type", "LOB", "term", "planned_revenue", "probability", "stage_id", "team_id", "user_id", "insurance_type", "partner_id"]), new Map("limit", [5]), new Map("order", ["planned_revenue desc"])])
+    .then(function (res) {
+      var tableContent = "";
+      var index = 0
+      res.forEach(function (opp) {
+        if (index % 2 == 0)
+          tableContent += '<tr class="even pointer">';
+        else
+          tableContent += '<tr class="odd pointer">'
+        tableContent += "<td>" + opp.insurance_type + "</td>" +
+          "<td>" + opp.LOB[1] + "</td>" +
+          "<td>" + opp.partner_id[1] + "</td>" +
+          "<td>" + opp.display_name + "</td>" +
+          "<td>" + opp.term + "</td>" +
+          "<td>" + opp.planned_revenue + "$" + "</td>" +
+          "<td>" + opp.probability + "</td>" +
+          "<td>" + opp.stage_id[1] + "</td>" +
+          "<td>" + opp.team_id[1] + "</td>" +
+          "<td>" + opp.user_id[1] + "</td>" +
+          '</tr>';
+        index++;
+      })
+      $("#opportunities").html(tableContent);
+    });
+  ajaxRequest(uid, password, "insurance.claim", "search_read", [], [new Map("fields", ["insured", "lob", "insurer", "product", "customer_policy", "policy_number", "name", "totalclaimexp", "totalsettled", "total_paid_amount", "claimstatus"]), new Map("limit", [5]), new Map("order", ["totalclaimexp desc"])])
+    .then(function (res) {
+      var tableContent = "";
+      var index = 0
+      res.forEach(function (claim) {
+        if (index % 2 == 0)
+          tableContent += '<tr class="even pointer">';
+        else
+          tableContent += '<tr class="odd pointer">'
+        tableContent += "<td>" + claim.insured + "</td>" +
+          "<td>" + claim.lob[1] + "</td>" +
+          "<td>" + claim.insurer[1] + "</td>" +
+          "<td>" + claim.product[1] + "</td>" +
+          "<td>" + claim.customer_policy[1] + "</td>" +
+          "<td>" + claim.policy_number[1] + "$" + "</td>" +
+          "<td>" + claim.name + "</td>" +
+          "<td>" + claim.totalclaimexp + "</td>" +
+          "<td>" + claim.totalsettled + "</td>" +
+          "<td>" + claim.total_paid_amount + "</td>" +
+          "<td>" + claim.claimstatus + "</td>" +
+          '</tr>';
+        index++;
+      })
+      $("#claims").html(tableContent)
+    });
+  ajaxRequest(uid, password, "hr.employee", "search_count", domains, maps)
     // for return result correctly
     .then(function (r) {
-      console.log(r)
       maps = [];
       agentsNumber = r;
       $("#agents #agents-number").text(r);
@@ -109,16 +198,14 @@ function getValuesNewAdmin(conntId, modal, method, dom = [], m = [], month = [])
       $(conntId + " .box-body strong").get(3).innerHTML = ((r.length / agentsNumber).toFixed(2));
     }).then(function () {
       //get agent graph data
-      console.log(uid, password, modal, method, dom, m, month)
       ajaxRequest(uid, password, modal, method, dom, m, month)
         .then(function (re) {
-          console.log(re)
           var fMonth = clacPre(JSON.parse(re[0])),
             sMonth = clacPre(JSON.parse(re[1]));
           var ratio = (((fMonth - sMonth) / sMonth) * 100).toFixed(1);
           if (fMonth == 0 && sMonth == 0)
             ratio = 0;
-          if (re[1] == 0) {
+          if (sMonth == 0) {
             ratio = 100;
             $(conntId + " .ratio i").attr("class", "green")
           } else {
@@ -264,15 +351,6 @@ function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], m
  * return url Format
  */
 function makeHttpUrl(uid, password, modal, method, domains = [], mapList = []) {
-  console.log(
-    odooUrl +
-    "uid=" + uid +
-    "&password=" + password +
-    "&modalname=" + modal +
-    "&method=" + method +
-    makeDomainQuery(domains) +
-    makeMappingList(mapList)
-  )
   return (
     odooUrl +
     "uid=" + uid +
