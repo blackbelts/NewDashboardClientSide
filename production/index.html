@@ -30,17 +30,28 @@
   <!-- Custom Theme Style -->
   <link href="../build/css/custom.min.css" rel="stylesheet">
   <style>
+    .count {
+      color: #265990
+    }
+
+    table.jambo_table thead {
+      background: #265990
+    }
+
     .custome_x_panel {
       background: #f7f7f7;
       border: none;
       padding: 10px 0px;
     }
-    .left_col{
-      background:#2E70B8
+
+    .left_col {
+      background: #337ab7
     }
-    .nav li.current-page{
+
+    .nav li.current-page {
       background: #265990
     }
+
     @media(max-width:768px) {
       .tile_count .tile_stats_count {
         border-bottom: none
@@ -89,7 +100,7 @@
     <div class="main_container">
       <div class="col-md-3 left_col menu_fixed">
         <div class="left_col scroll-view">
-          
+
           <div class="clearfix"></div>
           <!-- /menu profile quick info -->
           <!-- sidebar menu -->
@@ -173,7 +184,9 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                    <canvas id="policypieChart" height="250"></canvas>
+                    <!--                     <canvas id="policypieChart" height="250"></canvas>
+ -->
+                    <div id="policypieChart" style="min-width: 250px; height: 225px; margin: 0 auto"></div>
                   </div>
                 </div>
               </div>
@@ -512,6 +525,7 @@
     <!-- FastClick -->
     <!-- Chart.js -->
     <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
     <script src="js/customeJs/generalData.js"></script>

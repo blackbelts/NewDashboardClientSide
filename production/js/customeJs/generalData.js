@@ -1,5 +1,5 @@
 /* Api Url */
-var odooUrl = "http://178.128.197.205/odooApi/index.php?",
+var odooUrl = "http://localhost/file/index.php?",
   /* Auth user id */
   uid = '1',
   /* auth user passwrod */
@@ -102,33 +102,42 @@ $(function () {
 
   ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], '', [], true)
     .then(function (r) {
+      console.log(r)
       var datalist = [],
         labels = []
       Object.keys(r).forEach(function (k) {
-        console.log()
-        datalist.push(calcTotal(JSON.parse(r[k])))
+        datalist.push({
+          name: k,
+          y: calcTotal(JSON.parse(r[k]))
+        })
       })
-      var ctx = document.getElementById("policypieChart");
-      var data = {
-        datasets: [{
-          data: datalist,
-          backgroundColor: colors.slice(0, datalist.length),
-          label: 'Line Business' // for legend
-        }],
-        labels: Object.keys(r)
-      };
-      var pieChart = new Chart(ctx, {
-        data: data,
-        type: 'pie',
-        otpions: {
-          legend: {
-            display: true,
-            labels: {
-              fontColor: 'rgb(255, 99, 132)'
+      console.log(datalist)
+      Highcharts.chart('policypieChart', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+        },
+        title: null,
+        plotOptions: {
+          pie: {
+            allowPointSelect: false,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+              }
             }
           }
-
-        }
+        },
+        series: [{
+          name: 'Brands',
+          colorByPoint: true,
+          data: datalist
+        }]
       });
     })
   ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start" /* , "display_time", "stop_datetime", "attendee_ids", "location", "duration" */ ]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
@@ -270,7 +279,6 @@ $(function () {
       ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], [], '', [])
         // for return result correctly
         .then(function (r) {
-          console.log(r)
           maps = [];
           $("#leads #leads-number").text(makeNumber(Math.ceil(r)));
           $("#leads .box-body strong").get(0).innerHTML = ((r / agentsNumber).toFixed(2));
@@ -278,11 +286,9 @@ $(function () {
           dataSets = [];
           var mo = [];
           mo = getThisYearMonthes()
-          console.log(getThisYearMonthes())
           /* ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], '', [], "create_date3",getThisYearMonthes()) */
           ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], [], "create_date", getThisYearMonthes())
             .then(function (re) {
-              console.log(re)
               var ratio = (((re[0] - re[1]) / re[1]) * 100).toFixed(1);
               if (re[1] == 0) {
                 ratio = 100;
@@ -334,7 +340,8 @@ $(function () {
             pointHoverBackgroundColor: "#fff",
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointBorderWidth: 1,
-            data: data
+            data: data,
+            steppedLine: 'before',
           }, {
             label: "Target Line",
             backgroundColor: "rgba(3, 88, 106, 0.3)",
@@ -344,10 +351,11 @@ $(function () {
             pointHoverBackgroundColor: "#fff",
             pointHoverBorderColor: "rgba(151,187,205,1)",
             pointBorderWidth: 1,
-            data: [50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000]
+            data: [100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000]
           }]
         },
         options: {
+          responsive: true,
           scales: {
             yAxes: [{
               ticks: {
@@ -361,7 +369,7 @@ $(function () {
   /* Bar Chart*/
   ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["id"])], [])
     .then(function (r) {
-      console.log(r)
+      
     })
 });
 
@@ -456,7 +464,6 @@ function login(username, password) {
 }
 
 function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], monthCompreColume = '', monthesdata = [], lob) {
-  console.log(monthCompreColume)
   return $.ajax({
     url: makeHttpUrl(uid, password, modal, method, domains, mapList),
     method: "GET",
@@ -478,13 +485,13 @@ function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], m
  * return url Format
  */
 function makeHttpUrl(uid, password, modal, method, domains = [], mapList = []) {
-  console.log(odooUrl +
+ /*  console.log(odooUrl +
     "uid=" + uid +
     "&password=" + password +
     "&modalname=" + modal +
     "&method=" + method +
     makeDomainQuery(domains) +
-    makeMappingList(mapList))
+    makeMappingList(mapList)) */
   return (
     odooUrl +
     "uid=" + uid +
