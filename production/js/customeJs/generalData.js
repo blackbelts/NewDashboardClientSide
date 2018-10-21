@@ -106,37 +106,66 @@ $(function () {
       var datalist = [],
         labels = []
       Object.keys(r).forEach(function (k) {
-        datalist.push({
-          name: k,
-          y: calcTotal(JSON.parse(r[k]))
-        })
+        datalist.push(calcTotal(JSON.parse(r[k])))
+        /*  datalist.push({
+           name: k,
+           y: calcTotal(JSON.parse(r[k]))
+         }) */
       })
       console.log(datalist)
-      Highcharts.chart('policypieChart', {
-        chart: {
-          plotBackgroundColor: null,
-          plotBorderWidth: null,
-          plotShadow: false,
-          type: 'pie'
+      var a = {
+        type: "doughnut",
+        tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+        data: {
+          labels: Object.keys(r),
+          datasets: [{
+            data: datalist,
+            backgroundColor: colors.slice(0, datalist.length),
+            hoverBackgroundColor: colors.slice(0, datalist.length)
+          }]
         },
-        title: null,
-        plotOptions: {
-          pie: {
-            allowPointSelect: false,
-            cursor: 'pointer',
-            dataLabels: {
-              enabled: false,
-            },
-            showInLegend:true
-          }
-        },
-        series: [{
-          name: 'Brands',
-          colorByPoint: true,
-          data: datalist
-        }]
-      });
-      document.getElementById("policypieChart").getElementsByClassName("highcharts-credits")[0].remove()
+        options: {
+          legend: !1,
+          responsive: !1
+        }
+      };
+      var content = "",
+        i = 0;
+      datalist.forEach(function (item) {
+
+        content += "<tr>" + '<td><p><i class="fa fa-square" style="color:' + colors[i] + '"></i>' + Object.keys(r)[i] + "</p></td><td>" + item + "</td> </tr>"
+        i++;
+      })
+      $("td .tile_info").append(content)
+      $(".policypieChart").each(function () {
+        var b = $(this);
+        new Chart(b, a)
+      })
+      /*   Highcharts.chart('policypieChart', {
+          chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+          },
+          title: null,
+          plotOptions: {
+            pie: {
+              allowPointSelect: false,
+              cursor: 'pointer',
+              dataLabels: {
+                enabled: false,
+              },
+              showInLegend:true
+            }
+          },
+          series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: datalist
+          }]
+        });
+        document.getElementById("policypieChart").getElementsByClassName("highcharts-credits")[0].remove() */
 
     })
   ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start" /* , "display_time", "stop_datetime", "attendee_ids", "location", "duration" */ ]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
