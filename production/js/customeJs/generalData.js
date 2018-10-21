@@ -270,13 +270,19 @@ $(function () {
       ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], [], '', [])
         // for return result correctly
         .then(function (r) {
+          console.log(r)
           maps = [];
           $("#leads #leads-number").text(makeNumber(Math.ceil(r)));
           $("#leads .box-body strong").get(0).innerHTML = ((r / agentsNumber).toFixed(2));
         }).then(function (t) {
           dataSets = [];
-          ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], '', [], monthes)
+          var mo = [];
+          mo = getThisYearMonthes()
+          console.log(getThisYearMonthes())
+          /* ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], '', [], "create_date3",getThisYearMonthes()) */
+          ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], [], "create_date", getThisYearMonthes())
             .then(function (re) {
+              console.log(re)
               var ratio = (((re[0] - re[1]) / re[1]) * 100).toFixed(1);
               if (re[1] == 0) {
                 ratio = 100;
@@ -307,7 +313,6 @@ $(function () {
     .then(function (re) {
       re.reverse().forEach(function (month) {
         m = JSON.parse(month)
-        sum += 1000;
         if (m.length != 0)
           m.forEach(function (item) {
             sum += item.t_permimum
@@ -451,6 +456,7 @@ function login(username, password) {
 }
 
 function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], monthCompreColume = '', monthesdata = [], lob) {
+  console.log(monthCompreColume)
   return $.ajax({
     url: makeHttpUrl(uid, password, modal, method, domains, mapList),
     method: "GET",
@@ -472,13 +478,13 @@ function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], m
  * return url Format
  */
 function makeHttpUrl(uid, password, modal, method, domains = [], mapList = []) {
-  /* console.log(odooUrl +
+  console.log(odooUrl +
     "uid=" + uid +
     "&password=" + password +
     "&modalname=" + modal +
     "&method=" + method +
     makeDomainQuery(domains) +
-    makeMappingList(mapList)) */
+    makeMappingList(mapList))
   return (
     odooUrl +
     "uid=" + uid +
