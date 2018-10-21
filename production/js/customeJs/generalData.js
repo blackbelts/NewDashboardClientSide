@@ -305,9 +305,9 @@ $(function () {
     sum = 0;
   ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], "issue_date", monthes.reverse())
     .then(function (re) {
-      re.forEach(function (month) {
-        sum = 0;
+      re.reverse().forEach(function (month) {
         m = JSON.parse(month)
+        sum += 1000;
         if (m.length != 0)
           m.forEach(function (item) {
             sum += item.t_permimum
@@ -329,7 +329,7 @@ $(function () {
             pointHoverBackgroundColor: "#fff",
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointBorderWidth: 1,
-            data: data.reverse()
+            data: data
           }, {
             label: "Target Line",
             backgroundColor: "rgba(3, 88, 106, 0.3)",
@@ -342,6 +342,15 @@ $(function () {
             data: [50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000]
           }]
         },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
       });
     })
   /* Bar Chart*/
