@@ -87,7 +87,7 @@ $(function () {
       $("#brokerage-b").html(makeNumber(Math.ceil(sumB.toFixed(2))) + " $");
       $("#brokerage-percom").html(makeNumber(Math.ceil(sumCom.toFixed(2))) + " $");
     })
-    
+
   ajaxRequest(uid, password, "account.invoice", "search_read", [], [new Map("fields", ["amount_total_signed", "residual_signed"])])
     .then(function (r) {
       var sumamount_total_signed = 0;
@@ -100,7 +100,7 @@ $(function () {
       $("#osuntax").html(makeNumber(Math.ceil(sumamount_total_signed.toFixed(2) - sumresidual_signed.toFixed(2))) + " $");
     })
 
-  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], '',[], true)
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], '', [], true)
     .then(function (r) {
       var datalist = [],
         labels = []
@@ -267,7 +267,7 @@ $(function () {
            )
            $("#agents .ratio i").html($("#agents .ratio i").html() + ratio + "%")
          }) */
-      ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], [], '',[])
+      ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], [], '', [])
         // for return result correctly
         .then(function (r) {
           maps = [];
@@ -275,7 +275,7 @@ $(function () {
           $("#leads .box-body strong").get(0).innerHTML = ((r / agentsNumber).toFixed(2));
         }).then(function (t) {
           dataSets = [];
-          ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], '',[], monthes)
+          ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], '', [], monthes)
             .then(function (re) {
               var ratio = (((re[0] - re[1]) / re[1]) * 100).toFixed(1);
               if (re[1] == 0) {
@@ -303,7 +303,7 @@ $(function () {
   var monthes = getThisYearMonthes(),
     monthesNamelsit = [],
     sum = 0;
-  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], "issue_date",monthes.reverse())
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], "issue_date", monthes.reverse())
     .then(function (re) {
       re.forEach(function (month) {
         sum = 0;
@@ -345,14 +345,14 @@ $(function () {
       });
     })
   /* Bar Chart*/
-  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields",["id"])], [])
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["id"])], [])
     .then(function (r) {
       console.log(r)
     })
 });
 
 function getValuesNewAdmin(conntId, modal, method, dom = [], m = [], month = []) {
-  ajaxRequest(uid, password, modal, method, dom, m,'',[])
+  ajaxRequest(uid, password, modal, method, dom, m, '', [])
     // for return result correctly
     .then(function (r) {
       maps = [];
@@ -363,7 +363,7 @@ function getValuesNewAdmin(conntId, modal, method, dom = [], m = [], month = [])
       $(conntId + " .box-body strong").get(3).innerHTML = ((r.length / agentsNumber).toFixed(2));
     }).then(function () {
       //get agent graph data
-      ajaxRequest(uid, password, modal, method, dom, m, 'create_date',month)
+      ajaxRequest(uid, password, modal, method, dom, m, 'create_date', month)
         .then(function (re) {
           var fMonth = clacPre(JSON.parse(re[0])),
             sMonth = clacPre(JSON.parse(re[1]));
@@ -441,13 +441,13 @@ function login(username, password) {
   })
 }
 
-function ajaxRequest(uid, password, modal, method, domains = [], mapList = [],monthCompreColume='', monthesdata = [], lob) {
+function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], monthCompreColume = '', monthesdata = [], lob) {
   return $.ajax({
     url: makeHttpUrl(uid, password, modal, method, domains, mapList),
     method: "GET",
     dataType: 'json',
     data: {
-      compColm:monthCompreColume,
+      compColm: monthCompreColume,
       months: JSON.stringify(monthesdata),
       lob: JSON.stringify(lob)
     },
