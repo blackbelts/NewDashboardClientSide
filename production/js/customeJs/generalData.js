@@ -133,7 +133,7 @@ $(function () {
         i = 0;
       datalist.forEach(function (item) {
 
-        content += "<tr>" + '<td><p><i class="fa fa-square" style="color:' + colors[i] + '"></i>' + Object.keys(r)[i] + "</p></td><td>" + item + "</td> </tr>"
+        content += "<tr>" + '<td><p><i class="fa fa-square" style="color:' + colors[i] + '"></i>' + Object.keys(r)[i] + "</p></td><td style='text-align:right'>" + makeNumber(item) + "</td> </tr>"
         i++;
       })
       $("td .tile_info").append(content)
