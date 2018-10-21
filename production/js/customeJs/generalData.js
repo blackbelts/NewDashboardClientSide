@@ -125,12 +125,9 @@ $(function () {
             allowPointSelect: false,
             cursor: 'pointer',
             dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-              style: {
-                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-              }
-            }
+              enabled: false,
+            },
+            showInLegend:true
           }
         },
         series: [{
@@ -139,6 +136,8 @@ $(function () {
           data: datalist
         }]
       });
+      document.getElementById("policypieChart").getElementsByClassName("highcharts-credits")[0].remove()
+
     })
   ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start" /* , "display_time", "stop_datetime", "attendee_ids", "location", "duration" */ ]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
     .then(function (res) {
@@ -367,9 +366,9 @@ $(function () {
       });
     })
   /* Bar Chart*/
-  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["id"])], [])
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["id"])], 'issue_date', getThisYearMonthes(), '', true)
     .then(function (r) {
-      
+      console.log("error==>", r)
     })
 });
 
@@ -463,7 +462,7 @@ function login(username, password) {
   })
 }
 
-function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], monthCompreColume = '', monthesdata = [], lob) {
+function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], monthCompreColume = '', monthesdata = [], lob, ins) {
   return $.ajax({
     url: makeHttpUrl(uid, password, modal, method, domains, mapList),
     method: "GET",
@@ -471,7 +470,8 @@ function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], m
     data: {
       compColm: monthCompreColume,
       months: JSON.stringify(monthesdata),
-      lob: JSON.stringify(lob)
+      lob: JSON.stringify(lob),
+      ins: ins
     },
     error: function (e) {
       console.log(e)
@@ -485,13 +485,13 @@ function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], m
  * return url Format
  */
 function makeHttpUrl(uid, password, modal, method, domains = [], mapList = []) {
- /*  console.log(odooUrl +
-    "uid=" + uid +
-    "&password=" + password +
-    "&modalname=" + modal +
-    "&method=" + method +
-    makeDomainQuery(domains) +
-    makeMappingList(mapList)) */
+  /*  console.log(odooUrl +
+     "uid=" + uid +
+     "&password=" + password +
+     "&modalname=" + modal +
+     "&method=" + method +
+     makeDomainQuery(domains) +
+     makeMappingList(mapList)) */
   return (
     odooUrl +
     "uid=" + uid +
