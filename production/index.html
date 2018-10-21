@@ -33,6 +33,13 @@
     .custome_x_panel {
       background: #f7f7f7;
       border: none;
+      padding: 10px 0px;
+    }
+
+    @media(max-width:768px) {
+      .tile_count .tile_stats_count {
+        border-bottom: none
+      }
     }
 
     @media (min-width: 768px) {
@@ -42,6 +49,10 @@
 
       .tile_count .tile_stats_count span {
         font-size: 12px
+      }
+
+      .tile_count .tile_stats_count {
+        border-bottom: none
       }
     }
 
@@ -54,6 +65,16 @@
 
     .custome_toolbox {
       min-width: 0px;
+    }
+
+    .custome-h2 {
+      font-size: 16px
+    }
+
+    @media (min-width: 992px) {
+      .tile_count .tile_stats_count:first-child:before {
+        border-left: 2px solid #ADB2B5;
+      }
     }
   </style>
 </head>
@@ -83,6 +104,7 @@
       </div>
       <!-- page content -->
       <div class="right_col" role="main">
+
         <!-- start first row -->
         <div class="row">
           <div class="col-xs-12">
@@ -94,73 +116,80 @@
                 <span class="count_bottom"><i class="green" id="expected-prem-prob"></i> Average probability</span>
               </div>
               <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" id="premium-written">
-                <span class="count_top"><i class="fa fa-clock-o"></i> Premium Written</span>
+                <span class="count_top"><i class="fa fa-clock-o"></i> Gross Premium Written</span>
                 <div class="count" id="premium-written-gross"></div>
                 <span class="count_bottom"><i class="green" id="premium-written-net"> </i> Net Premium</span>
               </div>
               <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                <span class="count_top"><i class="fa fa-user"></i>Clamis</span>
+                <span class="count_top"><i class="fa fa-user"></i> Claims</span>
                 <div class="count" id="claim-settled"></div>
                 <span class="count_bottom"><i class="green" id="claim-paid"></i> Paid</span>
               </div>
               <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                <span class="count_top"><i class="fa fa-user"></i> Total Females</span>
-                <div class="count">4,567</div>
-                <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span>
+                <span class="count_top"><i class="fa fa-user"></i> Brokerage</span>
+                <div class="count" id="brokerage-b"></div>
+                <span class="count_bottom"><i class="green" id="brokerage-percom"></i> person Commision</span>
               </div>
               <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                <span class="count_top"><i class="fa fa-user"></i> Total Collections</span>
-                <div class="count">2,315</div>
-                <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
+                <span class="count_top"><i class="fa fa-user"></i> O/S Premium </span>
+                <div class="count" id="ostax"></div>
+                <span class="count_bottom"><i class="green" id="osuntax"></i> Paid</span>
               </div>
               <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" id="agents">
                 <span class="count_top"><i class="fa fa-user"></i> Agents</span>
-                <div class="count" id=agents-number>7,325</div>
-                <span class="count_bottom ratio"><i class=""><i class="fa fa-sort-asc"></i></i> From last month</span>
+                <div class="count" id=agents-number></div>
+                <!-- <span class="count_bottom ratio"><i class=""><i class="fa fa-sort-asc"></i></i> From last month</span> -->
               </div>
             </div>
           </div>
           <!-- /top tiles -->
-          <div class="col-md-9 col-sm-12 col-xs-12">
+          <div class="col-md-10 col-sm-12 col-xs-12">
             <div class="clearfix"></div>
             <div class="row ">
-              <div class="col-md-6 col-sm-12 col-xs-12">
+              <div class="col-md-4 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Visitors location <small>geo-presentation</small></h2>
+                    <h2 class="custome-h2">Target Graph <small></small></h2>
                     <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                    <div class="dashboard-widget-content">
-                    </div>
+                    <canvas id="policylineChart" height="250"></canvas>
                   </div>
                 </div>
               </div>
-              <div class="col-md-6 col-sm-12 col-xs-12">
+              <div class="col-md-4 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Visitors location <small>geo-presentation</small></h2>
+                    <h2 class="custome-h2">Net Premium vs LOB<small></small></h2>
                     <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                    <div class="dashboard-widget-content">
-                    </div>
+                    <canvas id="policypieChart" height="250"></canvas>
                   </div>
                 </div>
               </div>
-              <div class="col-xs-12">
+              <div class="col-md-4 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2 class="custome-h2">Insurer Performance <small></small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <canvas id="policyBarChart" height="250"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>Top 5 Meetings</h2>
@@ -177,10 +206,6 @@
                           <tr class="headings">
                             <th class="column-title">Subject </th>
                             <th class="column-title">Start Date </th>
-                            <th class="column-title">End Date </th>
-                            <th class="column-title">Attendees </th>
-                            <th class="column-title">Location </th>
-                            <th class="column-title">Duration </th>
                           </tr>
                         </thead>
                         <tbody id="meetings">
@@ -190,7 +215,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="col-md-6 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>Top 5 Opportunities<small>in Expected Premium</small></h2>
@@ -201,27 +226,25 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                    <div class="dashboard-widget-content">
-                      <div class="table-responsive">
-                        <table class="table table-striped jambo_table bulk_action">
-                          <thead>
-                            <tr class="headings">
-                              <th class="column-title">Type </th>
-                              <th class="column-title">LOB</th>
-                              <th class="column-title">Customer </th>
-                              <th class="column-title">Opportunity </th>
-                              <th class="column-title">Term </th>
-                              <th class="column-title">Expected Premium </th>
-                              <th class="column-title">Probability</th>
-                              <th class="column-title">Stage</th>
+                    <div class="table-responsive">
+                      <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                          <tr class="headings">
+                            <!-- <th class="column-title">Type </th> -->
+                            <!--  <th class="column-title">LOB</th> -->
+                            <!-- <th class="column-title">Customer </th> -->
+                            <th class="column-title">Opportunity </th>
+                            <!-- <th class="column-title">Term </th> -->
+                            <th class="column-title text-right">Premium </th>
+                            <!-- <th class="column-title">Probability</th> -->
+                            <!-- <th class="column-title">Stage</th>
                               <th class="column-title">Sales Channel </th>
-                              <th class="column-title">Sales person </th>
-                            </tr>
-                          </thead>
-                          <tbody id="opportunities">
-                          </tbody>
-                        </table>
-                      </div>
+                              <th class="column-title">Sales person </th> -->
+                          </tr>
+                        </thead>
+                        <tbody id="opportunities">
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
@@ -251,10 +274,10 @@
                               <th class="column-title">End</th>
                               <th class="column-title">R</th>
                               <th class="column-title">Issue on</th>
-                              <th class="column-title">Effective F </th>
+                              <!--  <th class="column-title">Effective F </th>
                               <th class="column-title">Effective To</th>
-                              <th class="column-title">Gros Prem </th>
-                              <th class="column-title">Net Prem</th>
+                              <th class="column-title">Gros Prem </th> -->
+                              <th class="column-title text-right">Net Prem</th>
                             </tr>
                           </thead>
                           <tbody id="policyes">
@@ -305,260 +328,191 @@
             </div>
 
           </div>
-          <div class="col-md-3  tile_count">
+          <div class="col-md-2">
             <!-- top tiles -->
-            <!-- <div class="row tile_count">
-                <div class="col-md-12 col-sm-12 col-xs-12" id="agents">
-                  <div class="x_panel custome_x_panel" style="height: auto;">
-                    <div class="x_title">
-                      <div class="clearfix" style="display: none;"></div>
-                      <div class="tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> Agents</span>
-                        <div class="count" id=agents-number></div>
-                        <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
-                      </div>
+            <div class="row tile_count">
+              <div class="col-md-12 col-sm-6 col-xs-6 tile_stats_count" id="leads">
+                <div class="x_panel custome_x_panel" style="height: auto;">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox custome_toolbox">
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix" style="display: none;"></div>
+                    <div class="">
+                      <span class="count_top"><i class="fa fa-user"></i> Leads</span>
+                      <div class="count" id="leads-number"></div>
+                      <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
                     </div>
                   </div>
-                </div> -->
-            <div class="col-md-12 col-sm-6 col-xs-6" id="leads">
-              <div class="x_panel custome_x_panel" style="height: auto;">
-                <div class="x_title">
-                  <ul class="nav navbar-right panel_toolbox custome_toolbox">
-                    <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix" style="display: none;"></div>
-                  <div class="tile_stats_count">
-                    <span class="count_top"><i class="fa fa-user"></i> Leads</span>
-                    <div class="count" id="leads-number"></div>
-                    <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
+                  <div class="x_content custome_x_content">
+                    <!-- content -->
+                    <div class="box-body">
+                      <p>Avg Count/Agent: <strong></strong></p>
+                    </div>
+                    <div class="clearfix"></div>
                   </div>
                 </div>
-                <div class="x_content custome_x_content">
-                  <!-- content -->
-                  <div class="box-body">
-                    <p>Avg Count/Agent: <strong></strong></p>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-6 tile_stats_count" id="new">
+                <div class="x_panel custome_x_panel" style="height: auto;">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox custome_toolbox">
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix" style="display: none;"></div>
+                    <div class="">
+                      <span class="count_top"><i class="fa fa-user"></i> New</span>
+                      <div class="count" id="new_prem"></div>
+                      <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
+                    </div>
                   </div>
-                  <div class="clearfix"></div>
+                  <div class="x_content custome_x_content">
+                    <!-- content -->
+                    <div class="box-body">
+                      <p>Count: <strong></strong></p>
+                      <p>Avg/opp: <strong></strong></p>
+                      <p>Avg/Agent: <strong></strong></p>
+                      <p>Avg Count/Agent: <strong></strong></p>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-6 tile_stats_count" id="qualified">
+                <div class="x_panel custome_x_panel" style="height: auto;">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox custome_toolbox">
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix" style="display: none;"></div>
+                    <div class="">
+                      <span class="count_top"><i class="fa fa-user"></i> qualified</span>
+                      <div class="count" id="new_prem"></div>
+                      <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
+                    </div>
+                  </div>
+                  <div class="x_content custome_x_content">
+                    <!-- content -->
+                    <div class="box-body">
+                      <p>Count: <strong></strong></p>
+                      <p>Avg/opp: <strong></strong></p>
+                      <p>Avg/Agent: <strong></strong></p>
+                      <p>Avg Count/Agent: <strong></strong></p>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-6 tile_stats_count" id="proposition">
+                <div class="x_panel custome_x_panel" style="height: auto;">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox custome_toolbox">
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix" style="display: none;"></div>
+                    <div class="">
+                      <span class="count_top"><i class="fa fa-user"></i> Proposition</span>
+                      <div class="count" id="new_prem"></div>
+                      <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
+                    </div>
+                  </div>
+                  <div class="x_content custome_x_content">
+                    <!-- content -->
+                    <div class="box-body">
+                      <p>Count: <strong></strong></p>
+                      <p>Avg/opp: <strong></strong></p>
+                      <p>Avg/Agent: <strong></strong></p>
+                      <p>Avg Count/Agent: <strong></strong></p>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-6 tile_stats_count" id="won">
+                <div class="x_panel custome_x_panel" style="height: auto;">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox custome_toolbox">
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix" style="display: none;"></div>
+                    <div class="">
+                      <span class="count_top"><i class="fa fa-user"></i> Won</span>
+                      <div class="count" id="new_prem"></div>
+                      <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
+                    </div>
+                  </div>
+                  <div class="x_content custome_x_content">
+                    <!-- content -->
+                    <div class="box-body">
+                      <p>Count: <strong></strong></p>
+                      <p>Avg/opp: <strong></strong></p>
+                      <p>Avg/Agent: <strong></strong></p>
+                      <p>Avg Count/Agent: <strong></strong></p>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-6 tile_stats_count" id="lost">
+                <div class="x_panel custome_x_panel" style="height: auto;">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox custome_toolbox">
+                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix" style="display: none;"></div>
+                    <div class="">
+                      <span class="count_top"><i class="fa fa-user"></i> Lost</span>
+                      <div class="count" id="new_prem"></div>
+                      <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
+                    </div>
+                  </div>
+                  <div class="x_content custome_x_content">
+                    <!-- content -->
+                    <div class="box-body">
+                      <p>Count: <strong></strong></p>
+                      <p>Avg/opp: <strong></strong></p>
+                      <p>Avg/Agent: <strong></strong></p>
+                      <p>Avg Count/Agent: <strong></strong></p>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-12 col-sm-6 col-xs-6" id="new">
-              <div class="x_panel custome_x_panel" style="height: auto;">
-                <div class="x_title">
-                  <ul class="nav navbar-right panel_toolbox custome_toolbox">
-                    <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix" style="display: none;"></div>
-                  <div class="tile_stats_count">
-                    <span class="count_top"><i class="fa fa-user"></i> New</span>
-                    <div class="count" id="new_prem"></div>
-                    <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
-                  </div>
-                </div>
-                <div class="x_content custome_x_content">
-                  <!-- content -->
-                  <div class="box-body">
-                    <p>Count: <strong></strong></p>
-                    <p>Avg/opp: <strong></strong></p>
-                    <p>Avg/Agent: <strong></strong></p>
-                    <p>Avg Count/Agent: <strong></strong></p>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 col-sm-6 col-xs-6" id="qualified">
-              <div class="x_panel custome_x_panel" style="height: auto;">
-                <div class="x_title">
-                  <ul class="nav navbar-right panel_toolbox custome_toolbox">
-                    <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix" style="display: none;"></div>
-                  <div class="tile_stats_count">
-                    <span class="count_top"><i class="fa fa-user"></i> qualified</span>
-                    <div class="count" id="new_prem"></div>
-                    <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
-                  </div>
-                </div>
-                <div class="x_content custome_x_content">
-                  <!-- content -->
-                  <div class="box-body">
-                    <p>Count: <strong></strong></p>
-                    <p>Avg/opp: <strong></strong></p>
-                    <p>Avg/Agent: <strong></strong></p>
-                    <p>Avg Count/Agent: <strong></strong></p>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 col-sm-6 col-xs-6" id="proposition">
-              <div class="x_panel custome_x_panel" style="height: auto;">
-                <div class="x_title">
-                  <ul class="nav navbar-right panel_toolbox custome_toolbox">
-                    <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix" style="display: none;"></div>
-                  <div class="tile_stats_count">
-                    <span class="count_top"><i class="fa fa-user"></i> Proposition</span>
-                    <div class="count" id="new_prem"></div>
-                    <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
-                  </div>
-                </div>
-                <div class="x_content custome_x_content">
-                  <!-- content -->
-                  <div class="box-body">
-                    <p>Count: <strong></strong></p>
-                    <p>Avg/opp: <strong></strong></p>
-                    <p>Avg/Agent: <strong></strong></p>
-                    <p>Avg Count/Agent: <strong></strong></p>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 col-sm-6 col-xs-6" id="won">
-              <div class="x_panel custome_x_panel" style="height: auto;">
-                <div class="x_title">
-                  <ul class="nav navbar-right panel_toolbox custome_toolbox">
-                    <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix" style="display: none;"></div>
-                  <div class="tile_stats_count">
-                    <span class="count_top"><i class="fa fa-user"></i> Won</span>
-                    <div class="count" id="new_prem"></div>
-                    <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
-                  </div>
-                </div>
-                <div class="x_content custome_x_content">
-                  <!-- content -->
-                  <div class="box-body">
-                    <p>Count: <strong></strong></p>
-                    <p>Avg/opp: <strong></strong></p>
-                    <p>Avg/Agent: <strong></strong></p>
-                    <p>Avg Count/Agent: <strong></strong></p>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 col-sm-6 col-xs-6" id="lost">
-              <div class="x_panel custome_x_panel" style="height: auto;">
-                <div class="x_title">
-                  <ul class="nav navbar-right panel_toolbox custome_toolbox">
-                    <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix" style="display: none;"></div>
-                  <div class="tile_stats_count">
-                    <span class="count_top"><i class="fa fa-user"></i> Lost</span>
-                    <div class="count" id="new_prem"></div>
-                    <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
-                  </div>
-                </div>
-                <div class="x_content custome_x_content">
-                  <!-- content -->
-                  <div class="box-body">
-                    <p>Count: <strong></strong></p>
-                    <p>Avg/opp: <strong></strong></p>
-                    <p>Avg/Agent: <strong></strong></p>
-                    <p>Avg Count/Agent: <strong></strong></p>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 col-sm-6 col-xs-6" id="prop">
-              <div class="x_panel custome_x_panel" style="height: auto;">
-                <div class="x_title">
-                  <ul class="nav navbar-right panel_toolbox custome_toolbox">
-                    <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix" style="display: none;"></div>
-                  <div class="tile_stats_count">
-                    <span class="count_top"><i class="fa fa-user"></i> No. of Proposals</span>
-                    <div class="count" id="new_prem"></div>
-                    <span class="count_bottom ratio"><i class="red"></i> From last Month</span>
-                  </div>
-                </div>
-                <div class="x_content custome_x_content">
-                  <!-- content -->
-                  <div class="box-body">
-                    <p>Count: <strong></strong></p>
-                    <p>Avg/opp: <strong></strong></p>
-                    <p>Avg/Agent: <strong></strong></p>
-                    <p>Avg Count/Agent: <strong></strong></p>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-            </div>
+            <!-- /top tiles -->
           </div>
-          <!-- /top tiles -->
+          <!-- end first row -->
         </div>
-        <!-- end first row -->
+        <!-- end of weather widget -->
       </div>
-      <!-- end of weather widget -->
+      <!-- /page content -->
+
+      <!-- footer content -->
+      <footer>
+        <div class="pull-right">
+          Template by <a href="">Black Belts</a>
+        </div>
+        <div class="clearfix"></div>
+      </footer>
+      <!-- /footer content -->
     </div>
-    <!-- /page content -->
 
-    <!-- footer content -->
-    <footer>
-      <div class="pull-right">
-        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-      </div>
-      <div class="clearfix"></div>
-    </footer>
-    <!-- /footer content -->
-  </div>
-
-  <!-- jQuery -->
-  <script src="../vendors/jquery/dist/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-  <!-- FastClick -->
-  <script src="../vendors/fastclick/lib/fastclick.js"></script>
-  <!-- NProgress -->
-  <script src="../vendors/nprogress/nprogress.js"></script>
-  <!-- Chart.js -->
-  <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
-  <!-- gauge.js -->
-  <script src="../vendors/gauge.js/dist/gauge.min.js"></script>
-  <!-- bootstrap-progressbar -->
-  <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-  <!-- iCheck -->
-  <script src="../vendors/iCheck/icheck.min.js"></script>
-  <!-- Skycons -->
-  <script src="../vendors/skycons/skycons.js"></script>
-  <!-- Flot -->
-  <script src="../vendors/Flot/jquery.flot.js"></script>
-  <script src="../vendors/Flot/jquery.flot.pie.js"></script>
-  <script src="../vendors/Flot/jquery.flot.time.js"></script>
-  <script src="../vendors/Flot/jquery.flot.stack.js"></script>
-  <script src="../vendors/Flot/jquery.flot.resize.js"></script>
-  <!-- Flot plugins -->
-  <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
-  <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
-  <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
-  <!-- DateJS -->
-  <script src="../vendors/DateJS/build/date.js"></script>
-  <!-- JQVMap -->
-  <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
-  <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-  <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-  <!-- bootstrap-daterangepicker -->
-  <script src="../vendors/moment/min/moment.min.js"></script>
-  <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-
-  <!-- Custom Theme Scripts -->
-  <script src="../build/js/custom.min.js"></script>
-  <script src="js/customeJs/generalData.js"></script>
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <!-- Chart.js -->
+    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+    <script src="js/customeJs/generalData.js"></script>
 </body>
 
 </html>

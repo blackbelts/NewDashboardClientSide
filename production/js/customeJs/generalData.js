@@ -20,6 +20,7 @@ var odooUrl = "http://178.128.197.205/odooApi/index.php?",
   graphlist = [],
   agentsNumber;
 $(function () {
+  getThisYearMonthes();
   /* 
    var domains = [];
    *this var for contains Odoo domins list 
@@ -38,6 +39,7 @@ $(function () {
    *this function make ajax request to get number of agents from server
    * write it in html file 
    */
+
   ajaxRequest(uid, password, "crm.lead", "search_read", [new Domain("active", "%3D", "true")], [new Map("fields", ["planned_revenue", "probability"])])
     .then(function (r) {
       var sumExpected = 0;
@@ -46,7 +48,7 @@ $(function () {
         sumExpected += opp.planned_revenue;
         sumProb += opp.probability;
       });
-      $("#expected-prem-num").html(sumExpected.toFixed(2));
+      $("#expected-prem-num").html(makeNumber(Math.ceil(sumExpected.toFixed(2))) + " $");
       $("#expected-prem-prob").html((sumProb / r.length).toFixed(2) + "%");
 
     })
@@ -58,24 +60,77 @@ $(function () {
         sumGross += p.gross_perimum;
         sumNet += p.t_permimum;
       });
-      $("#premium-written-gross").html(sumGross.toFixed(2) + " $");
-      $("#premium-written-net").html(sumNet.toFixed(2) + " $");
+      $("#premium-written-gross").html(makeNumber(Math.ceil(sumGross.toFixed(2))) + " $");
+      $("#premium-written-net").html(makeNumber(Math.ceil(sumNet.toFixed(2))) + " $");
 
     })
   ajaxRequest(uid, password, "insurance.claim", "search_read", [], [new Map("fields", ["totalsettled", "total_paid_amount"])])
     .then(function (r) {
       var sumTotalSettled = 0;
       var sumPaid = 0;
-      console.log(r)
       r.forEach(function (c) {
         sumTotalSettled += c.totalsettled;
         sumPaid += c.total_paid_amount;
       });
-      $("#claim-settled").html(sumTotalSettled.toFixed(2) + " $");
-      $("#claim-paid").html(sumPaid.toFixed(2) + " $");
-
+      $("#claim-settled").html(makeNumber(Math.ceil(sumTotalSettled.toFixed(2))) + " $");
+      $("#claim-paid").html(makeNumber(Math.ceil(sumPaid.toFixed(2))) + " $");
     })
-  ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start", "display_time", "stop_datetime", "attendee_ids", "location", "duration"]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["total_commision", "com_commision"])])
+    .then(function (r) {
+      var sumB = 0;
+      var sumCom = 0;
+      r.forEach(function (c) {
+        sumB += c.total_commision;
+        sumCom += c.com_commision;
+      });
+      $("#brokerage-b").html(makeNumber(Math.ceil(sumB.toFixed(2))) + " $");
+      $("#brokerage-percom").html(makeNumber(Math.ceil(sumCom.toFixed(2))) + " $");
+    })
+  ajaxRequest(uid, password, "account.invoice", "search_read", [], [new Map("fields", ["amount_total_signed", "residual_signed"])])
+    .then(function (r) {
+      var sumamount_total_signed = 0;
+      var sumresidual_signed = 0;
+      r.forEach(function (c) {
+        sumamount_total_signed += c.amount_total_signed;
+        sumresidual_signed += c.residual_signed;
+      });
+      $("#ostax").html(makeNumber(Math.ceil(sumamount_total_signed.toFixed(2))) + " $");
+      $("#osuntax").html(makeNumber(Math.ceil(sumamount_total_signed.toFixed(2) - sumresidual_signed.toFixed(2))) + " $");
+    })
+
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], [], true)
+    .then(function (r) {
+      console.log(r)
+      var datalist = [],
+        labels = []
+      Object.keys(r).forEach(function (k) {
+        console.log()
+        datalist.push(calcTotal(JSON.parse(r[k])))
+      })
+      var ctx = document.getElementById("policypieChart");
+      var data = {
+        datasets: [{
+          data: datalist,
+          backgroundColor: colors.slice(0, datalist.length),
+          label: 'Line Business' // for legend
+        }],
+        labels: Object.keys(r)
+      };
+      var pieChart = new Chart(ctx, {
+        data: data,
+        type: 'pie',
+        otpions: {
+          legend: {
+            display: true,
+            labels: {
+              fontColor: 'rgb(255, 99, 132)'
+            }
+          }
+
+        }
+      });
+    })
+  ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start" /* , "display_time", "stop_datetime", "attendee_ids", "location", "duration" */ ]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
     .then(function (res) {
       var tableContent = "";
       var index = 0;
@@ -85,8 +140,8 @@ $(function () {
         else
           tableContent += '<tr class="odd pointer">'
         tableContent += "<td>" + meeting.name + "</td>" +
-          "<td>" + meeting.display_start + "</td>" +
-          "<td>" + meeting.stop_datetime + "</td>" +
+          "<td>" + meeting.display_start + "</td>"
+        /* +"<td>" + meeting.stop_datetime + "</td>" +
           "<td>" + meeting.attendee_ids.length + " record" + "</td>" +
           "<td>" + meeting.location + "</td>";
         var duration = ""
@@ -98,13 +153,13 @@ $(function () {
         if (((meeting.duration - Math.floor(meeting.duration)) * 60).toString().length == 1)
           duration += "0" + (Math.ceil((meeting.duration - Math.floor(meeting.duration)) * 60));
         else
-          duration += (Math.ceil((meeting.duration - Math.floor(meeting.duration)) * 60));
-        tableContent += "<td>" + duration + "</td>" + '</tr>';
+          duration += (Math.ceil((meeting.duration - Math.floor(meeting.duration)) * 60)); */
+        tableContent += /* "<td>" + duration + "</td>" + */ '</tr>';
       })
       index++;
       $("#meetings").html(tableContent);
     });
-  ajaxRequest(uid, password, "crm.lead", "search_read", [new Domain("type", "%3D", "opportunity"), new Domain("active", "%3D", "true")], [new Map("fields", ["display_name", "type", "LOB", "term", "planned_revenue", "probability", "stage_id", "team_id", "user_id", "insurance_type", "partner_id"]), new Map("limit", [5]), new Map("order", ["planned_revenue desc"])])
+  ajaxRequest(uid, password, "crm.lead", "search_read", [new Domain("type", "%3D", "opportunity"), new Domain("active", "%3D", "true")], [new Map("fields", ["display_name", /* "type", */ "LOB", "term", "planned_revenue", "probability", /*"stage_id", "team_id", "user_id", "insurance_type",*/ "partner_id"]), new Map("limit", [5]), new Map("order", ["planned_revenue desc"])])
     .then(function (res) {
       var tableContent = "";
       var index = 0
@@ -113,16 +168,16 @@ $(function () {
           tableContent += '<tr class="even pointer">';
         else
           tableContent += '<tr class="odd pointer">'
-        tableContent += "<td>" + opp.insurance_type + "</td>" +
-          "<td>" + opp.LOB[1] + "</td>" +
-          "<td>" + opp.partner_id[1] + "</td>" +
+        tableContent += /* "<td>" + opp.insurance_type + "</td>" + */
+          /*  "<td>" + opp.LOB[1] + "</td>" + */
+          /* "<td>" + opp.partner_id[1] + "</td>" + */
           "<td>" + opp.display_name + "</td>" +
-          "<td>" + opp.term + "</td>" +
-          "<td>" + opp.planned_revenue + "$" + "</td>" +
-          "<td>" + opp.probability + "</td>" +
-          "<td>" + opp.stage_id[1] + "</td>" +
+          /*  "<td>" + opp.term + "</td>" + */
+          "<td class=text-right>" + makeNumber(opp.planned_revenue) + " $" + "</td>" +
+          /* "<td>" + opp.probability + "</td>" + */
+          /* "<td>" + opp.stage_id[1] + "</td>" +
           "<td>" + opp.team_id[1] + "</td>" +
-          "<td>" + opp.user_id[1] + "</td>" +
+          "<td>" + opp.user_id[1] + "</td>" + */
           '</tr>';
         index++;
       })
@@ -144,9 +199,9 @@ $(function () {
           "<td>" + claim.customer_policy[1] + "</td>" +
           "<td>" + claim.policy_number[1] + "$" + "</td>" +
           "<td>" + claim.name + "</td>" +
-          "<td>" + claim.totalclaimexp + "</td>" +
-          "<td>" + claim.totalsettled + "</td>" +
-          "<td>" + claim.total_paid_amount + "</td>" +
+          "<td class=text-right>" + makeNumber(claim.totalclaimexp) + "</td>" +
+          "<td class=text-right>" + makeNumber(claim.totalsettled) + "</td>" +
+          "<td class=text-right>" + makeNumber(claim.total_paid_amount) + "</td>" +
           "<td>" + claim.claimstatus + "</td>" +
           '</tr>';
         index++;
@@ -172,21 +227,21 @@ $(function () {
           "<td>" + p.edit_number + "</td>" +
           "<td> <input type='checkbox'" + ch + "></td>" +
           "<td>" + p.issue_date + "</td>" +
-          "<td>" + p.start_date + "</td>" +
+          /* "<td>" + p.start_date + "</td>" +
           "<td>" + p.end_date + "</td>" +
-          "<td>" + p.gross_perimum + "</td>" +
-          "<td>" + p.t_permimum + "</td>" +
+          "<td>" + p.gross_perimum + "</td>" + */
+          "<td class=text-right>" + makeNumber(p.t_permimum) + "</td>" +
           '</tr>';
         index++;
       })
       $("#policyes").html(tableContent)
     });
-  ajaxRequest(uid, password, "hr.employee", "search_count", domains, maps)
+  ajaxRequest(uid, password, "res.partner", "search_count", [new Domain("active", "%3D", "true"), new Domain("agent", "%3D", "true")], maps)
     // for return result correctly
     .then(function (r) {
       maps = [];
       agentsNumber = r;
-      $("#agents #agents-number").text(r);
+      $("#agents #agents-number").text(makeNumber(Math.ceil(r)));
     }).then(function (t) {
       //get agent graph data
       var monthes = getMonths(),
@@ -196,21 +251,26 @@ $(function () {
       })
       monthesNamelsit.splice(0, 1);
       dataSets = [];
-      ajaxRequest(uid, password, "res.partner", "search_count", domains, maps, monthes)
-        .then(function (re) {
-          var ratio = (((re[0] - re[1]) / re[1]) * 100).toFixed(1);
-          if (ratio < 0) {
-            $("#agents .ratio i").attr("class", "red")
-          } else(
-            $("#agents .ratio i").attr("class", "green")
-          )
-          $("#agents .ratio i").html($("#agents .ratio i").html() + ratio + "%")
-        })
+      /*  ajaxRequest(uid, password, "res.partner", "search_count", [new Domain("active", "%3D", "true"), new Domain("agent", "%3D", "true")], maps, monthes)
+         .then(function (re) {
+           var ratio = (((re[0] - re[1]) / re[1]) * 100).toFixed(1);
+           if (re[1] == 0 && re[0] == 0) {
+             ratio = 0
+           } else if (re[1] == 0) {
+             ratio = 100
+           }
+           if (ratio < 0) {
+             $("#agents .ratio i").attr("class", "red")
+           } else(
+             $("#agents .ratio i").attr("class", "green")
+           )
+           $("#agents .ratio i").html($("#agents .ratio i").html() + ratio + "%")
+         }) */
       ajaxRequest(uid, password, "crm.lead", "search_count", [new Domain("type", "%3D", "lead")], [], [])
         // for return result correctly
         .then(function (r) {
           maps = [];
-          $("#leads #leads-number").text(r);
+          $("#leads #leads-number").text(makeNumber(Math.ceil(r)));
           $("#leads .box-body strong").get(0).innerHTML = ((r / agentsNumber).toFixed(2));
         }).then(function (t) {
           dataSets = [];
@@ -237,6 +297,52 @@ $(function () {
       getValuesNewAdmin("#won", "crm.lead", "search_read", [new Domain("stage_id", "%3D", "Won"), new Domain("type", "%3D", "opportunity")], [new Map("fields", ["planned_revenue"])], monthes)
       getValuesNewAdmin("#lost", "crm.lead", "search_read", [new Domain("active", "!%3D", "true")], [new Map("fields", ["planned_revenue"])], monthes)
     })
+  /*Draw line chart  for policy */
+  var data = []
+  var monthes = getThisYearMonthes(),
+    monthesNamelsit = [],
+    sum = 0;
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], monthes.reverse())
+    .then(function (re) {
+      re.forEach(function (month) {
+        sum = 0;
+        m = JSON.parse(month)
+        if (m.length != 0)
+          m.forEach(function (item) {
+            sum += item.t_permimum
+          })
+        data.push(sum)
+      })
+      var ctx = document.getElementById("policylineChart");
+
+      var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: monthesNames,
+          datasets: [{
+            label: "Policy Net permimum",
+            backgroundColor: "rgba(38, 185, 154, 0.31)",
+            borderColor: "rgba(38, 185, 154, 0.7)",
+            pointBorderColor: "rgba(38, 185, 154, 0.7)",
+            pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointBorderWidth: 1,
+            data: data.reverse()
+          }, {
+            label: "Target Line",
+            backgroundColor: "rgba(3, 88, 106, 0.3)",
+            borderColor: "rgba(3, 88, 106, 0.70)",
+            pointBorderColor: "rgba(3, 88, 106, 0.70)",
+            pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgba(151,187,205,1)",
+            pointBorderWidth: 1,
+            data: [50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000]
+          }]
+        },
+      });
+    })
 });
 
 function getValuesNewAdmin(conntId, modal, method, dom = [], m = [], month = []) {
@@ -244,7 +350,7 @@ function getValuesNewAdmin(conntId, modal, method, dom = [], m = [], month = [])
     // for return result correctly
     .then(function (r) {
       maps = [];
-      $(conntId + " #new_prem").text(clacPre(r).toFixed(1) + "$");
+      $(conntId + " #new_prem").text(makeNumber(Math.ceil(clacPre(r).toFixed(1))) + " $");
       $(conntId + " .box-body strong").get(0).innerHTML = r.length;
       $(conntId + " .box-body strong").get(1).innerHTML = ((clacPre(r) / r.length).toFixed(2));
       $(conntId + " .box-body strong").get(2).innerHTML = ((clacPre(r) / agentsNumber).toFixed(2));
@@ -273,73 +379,18 @@ function getValuesNewAdmin(conntId, modal, method, dom = [], m = [], month = [])
     })
 }
 
-function setValues(id, modal, method, re, domains = [], maps = [], monthes = [], canvasId = []) {
-  ajaxRequest(uid, password, modal, method, domains, maps, monthes)
-    .then(function (re2) {
-      $(id + " p strong").get(1).append(clacPre(re2).toFixed(2));
-      $(id + " p strong").get(2).append((clacPre(re2) / parseInt($(id + " p strong").get(0).innerHTML)).toFixed(2));
-      $(id + " p strong").get(3).append((clacPre(re2) / agentsNumber).toFixed(2));
-      $(id + " p strong").get(4).append((re / agentsNumber).toFixed(2));
-      var monthes = getMonths(),
-        monthesNamelsit = [];
-      monthes.forEach(function (m) {
-        monthesNamelsit.push(monthesNames[new Date(m).getMonth()] + new Date(m).getFullYear().toString());
-      })
-      monthesNamelsit.splice(0, 1);
-      var dS = [];
-      //get count graph data
-      ajaxRequest(uid, password, modal, "search_count", domains, [], monthes)
-        .then(function (response) {
-          dS.push(response);
-          graphlist.push(areaChart(dS, monthesNamelsit, graphlist.length, canvasId[0]));
-          graphlist.push(donut(response, monthesNamelsit, graphlist.length, canvasId[1]));
-          graphlist.push(barChart(dS, monthesNamelsit, graphlist.length, canvasId[2]))
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-      var montelyPre = [],
-        ava = [],
-        apa = [],
-        aca = [],
-        sumPre = 0;
-      ajaxRequest(uid, password, modal, "search_read", domains, maps, monthes)
-        .then(function (res = []) {
-          res.forEach(function (item) {
-            sumPre = 0;
-            JSON.parse(item).forEach(function (item2) {
-              sumPre += item2.planned_revenue;
-            })
-            if (JSON.parse(item).length == 0) {
-              ava.push(0);
-              aca.push(0);
-            } else {
-              ava.push((sumPre / JSON.parse(item).length).toFixed(2));
-              aca.push((JSON.parse(item).length / agentsNumber).toFixed(2))
-            }
-            apa.push((sumPre / agentsNumber).toFixed(2))
-            montelyPre.push(sumPre);
-          })
-          graphlist.push(areaChart([montelyPre], monthesNamelsit, graphlist.length, canvasId[3]));
-          graphlist.push(donut(montelyPre, monthesNamelsit, graphlist.length, canvasId[4]));
-          graphlist.push(barChart([montelyPre], monthesNamelsit, graphlist.length, canvasId[5]));
-          graphlist.push(areaChart([ava], monthesNamelsit, graphlist.length, canvasId[6]));
-          graphlist.push(donut(ava, monthesNamelsit, graphlist.length, canvasId[7]));
-          graphlist.push(barChart([ava], monthesNamelsit, graphlist.length, canvasId[8]));
-          graphlist.push(areaChart([apa], monthesNamelsit, graphlist.length, canvasId[9]));
-          graphlist.push(donut(apa, monthesNamelsit, graphlist.length, canvasId[10]));
-          graphlist.push(barChart([apa], monthesNamelsit, graphlist.length, canvasId[11]));
-          graphlist.push(areaChart([aca], monthesNamelsit, graphlist.length, canvasId[12]));
-          graphlist.push(donut(aca, monthesNamelsit, graphlist.length, canvasId[13]));
-          graphlist.push(barChart([aca], monthesNamelsit, graphlist.length, canvasId[14]));
-        })
-    })
-}
-
 function clacPre(array = []) {
   sum = 0;
   array.forEach(function (item) {
     sum += item.planned_revenue
+  });
+  return sum
+}
+
+function calcTotal(array = []) {
+  sum = 0;
+  array.forEach(function (item) {
+    sum += item.t_permimum
   });
   return sum
 }
@@ -384,13 +435,14 @@ function login(username, password) {
   })
 }
 
-function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], monthesdata = []) {
+function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], monthesdata = [], lob) {
   return $.ajax({
     url: makeHttpUrl(uid, password, modal, method, domains, mapList),
     method: "GET",
     dataType: 'json',
     data: {
       months: JSON.stringify(monthesdata),
+      lob: JSON.stringify(lob)
     },
     error: function (e) {
       console.log(e)
@@ -404,6 +456,13 @@ function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], m
  * return url Format
  */
 function makeHttpUrl(uid, password, modal, method, domains = [], mapList = []) {
+  /* console.log(odooUrl +
+    "uid=" + uid +
+    "&password=" + password +
+    "&modalname=" + modal +
+    "&method=" + method +
+    makeDomainQuery(domains) +
+    makeMappingList(mapList)) */
   return (
     odooUrl +
     "uid=" + uid +
@@ -480,7 +539,7 @@ function getMonths() {
         yearChanged = true
         date.setYear(date.getFullYear() - 1);
       }
-      date.setMonth(month + 11);
+      date.setMonth(month + 12);
     } else {
       date.setMonth(month);
     }
@@ -503,4 +562,45 @@ function getMonths() {
     month--;
   }
   return monthsList
+}
+
+function getThisYearMonthes() {
+  var thisYear = new Date().getFullYear(),
+    date = new Date(),
+    thisMonth = new Date().getMonth()
+  monthsList = [],
+    breakLoop = false;
+  for (let i = 0; i < 13; i++) {
+    date.setDate(1);
+    date.setHours(00);
+    date.setSeconds(00);
+    date.setMilliseconds(00);
+    date.setMinutes(00);
+    date.setMonth(i);
+    date.setFullYear(thisYear)
+    if (i == 12)
+      date.setFullYear(thisYear + 1)
+    /*
+     * the next code push month date to months list 
+     * convert month date to MM-DD-YYYY HH:MM:SS 
+     */
+    monthsList.push([date.getMonth() + 1,
+      date.getDate(),
+      date.getFullYear()
+    ].join('-') + ' ' + [date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    ].join(':'));
+    if (i == thisMonth + 1) {
+      break
+    }
+
+    if (breakLoop)
+      break;
+  }
+  return monthsList
+}
+
+function makeNumber(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
