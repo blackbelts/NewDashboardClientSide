@@ -1,5 +1,5 @@
 /* Api Url */
-var odooUrl = "http://localhost/file/index.php?",
+var odooUrl = "http://178.128.197.205/odooApi/index.php?",
   /* Auth user id */
   uid = '1',
   /* auth user passwrod */
