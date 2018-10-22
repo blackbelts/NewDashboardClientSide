@@ -101,7 +101,6 @@ $(function () {
 
   ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], '', [], true)
     .then(function (r) {
-      console.log("last Graph", r)
       var datalist = [],
         sum = 0,
         labelIndex = 0,
@@ -109,7 +108,6 @@ $(function () {
       Object.keys(r).forEach(function (k) {
         datalist.push(calcTotal(JSON.parse(r[k])));
         sum += calcTotal(JSON.parse(r[k]))
-        console.log(k, sum)
       })
       datalist.forEach(function (item) {
         cont += '<div class="widget_summary"><div class="w_left w_25">' +
@@ -311,7 +309,7 @@ $(function () {
       var lineChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: monthesNames,
+          labels: [1,2,3,4,5,6,7,8,9,10,11,12],
           datasets: [{
             label: "Net permimum",
             backgroundColor: "rgba(38, 185, 154, 0.31)",
@@ -322,17 +320,20 @@ $(function () {
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointBorderWidth: 1,
             data: data,
-            steppedLine: 'True',
+            steppedLine: true,
+            lineTension: 0,
+            fill: false,
           }, {
             label: "Target Line",
-            backgroundColor: "rgba(3, 88, 106, 0.3)",
-            borderColor: "rgba(3, 88, 106, 0.70)",
-            pointBorderColor: "rgba(3, 88, 106, 0.70)",
-            pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
+            backgroundColor: "rgba(38,89,144, 0.3)",
+            borderColor: "rgba(38,89,144, 0.70)",
+            pointBorderColor: "rgba(38,89,144, 0.70)",
+            pointBackgroundColor: "rgba(38,89,144, 0.70)",
             pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(151,187,205,1)",
+            pointHoverBorderColor: "rgba(38,89,144,1)",
             pointBorderWidth: 1,
-            data: [100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000]
+            data: [100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000],
+            fill: false,
           }]
         },
         options: {
