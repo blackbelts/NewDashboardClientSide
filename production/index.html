@@ -34,6 +34,10 @@
       color: #265990
     }
 
+    .fixedHeight {
+      height: 300px;
+    }
+
     table.jambo_table thead {
       background: #265990
     }
@@ -71,7 +75,16 @@
         border-bottom: none
       }
     }
-
+    .progress{
+      height: 10px;
+      margin-top: 5px;
+    }
+    .bg-green{
+      background: #265990 !important
+    }
+    .widget_summary .w_right span{
+      font-size: 13px
+    }
     .custome_x_content {
       display: none;
       background-color: #fff;
@@ -159,8 +172,8 @@
           <div class="col-md-10 col-sm-12 col-xs-12">
             <div class="clearfix"></div>
             <div class="row ">
-              <div class="col-md-4 col-sm-12 col-xs-12">
-                <div class="x_panel">
+              <div class="col-md-4 col-sm-12 col-xs-12 fixedHeight">
+                <div class="x_panel fixedHeight">
                   <div class="x_title">
                     <h2 class="custome-h2">Target Graph <small></small></h2>
                     <ul class="nav navbar-right panel_toolbox">
@@ -174,10 +187,10 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-4 col-sm-12 col-xs-12">
-                <div class="x_panel">
+              <div class="col-md-4 col-sm-12 col-xs-12 fixedHeight">
+                <div class="x_panel fixedHeight">
                   <div class="x_title">
-                    <h2 class="custome-h2">Net Premium vs LOB<small></small></h2>
+                    <h2 class="custome-h2">Net Premium vs Insurer<small></small></h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </ul>
@@ -185,7 +198,7 @@
                   </div>
                   <div class="x_content">
                     <table class="" style="width:100%">
-                      <tr>
+                      <!-- <tr>
                         <th style="width:37%;">
                           <p>Top 5</p>
                         </th>
@@ -197,10 +210,10 @@
                             <p class="">Progress</p>
                           </div>
                         </th>
-                      </tr>
+                      </tr> -->
                       <tr>
                         <td>
-                          <canvas class="policypieChart" height="165" width="140" style="margin: 10px 10px 10px 0"></canvas>
+                          <canvas class="policypieChart" height="190" width="100" style="    margin-right: 10px"></canvas>
                         </td>
                         <td>
                           <table class="tile_info">
@@ -214,16 +227,15 @@
                 </div>
               </div>
               <div class="col-md-4 col-sm-12 col-xs-12">
-                <div class="x_panel">
+                <div class="x_panel fixedHeight">
                   <div class="x_title">
-                    <h2 class="custome-h2">Insurer Performance <small></small></h2>
+                    <h2 class="custome-h2">Net Premium vs LOB <small></small></h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li style="float: right;"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
-                  <div class="x_content">
-                    <canvas id="policyBarChart" height="250"></canvas>
+                  <div class="x_content" id='bars'>
                   </div>
                 </div>
               </div>

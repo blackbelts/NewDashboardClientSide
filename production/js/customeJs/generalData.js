@@ -1,5 +1,5 @@
 /* Api Url */
-var odooUrl = "http://178.128.197.205/odooApi/index.php?",
+var odooUrl = "http://localhost/file/index.php?",
   /* Auth user id */
   uid = '1',
   /* auth user passwrod */
@@ -77,7 +77,6 @@ $(function () {
     })
   ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["total_commision", "com_commision"])])
     .then(function (r) {
-      console.lo
       var sumB = 0;
       var sumCom = 0;
       r.forEach(function (c) {
@@ -102,71 +101,25 @@ $(function () {
 
   ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], '', [], true)
     .then(function (r) {
-      console.log(r)
+      console.log("last Graph", r)
       var datalist = [],
-        labels = []
+        sum = 0,
+        labelIndex = 0,
+        cont = '';
       Object.keys(r).forEach(function (k) {
-        datalist.push(calcTotal(JSON.parse(r[k])))
-        /*  datalist.push({
-           name: k,
-           y: calcTotal(JSON.parse(r[k]))
-         }) */
+        datalist.push(calcTotal(JSON.parse(r[k])));
+        sum += calcTotal(JSON.parse(r[k]))
+        console.log(k, sum)
       })
-      console.log(datalist)
-      var a = {
-        type: "doughnut",
-        tooltipFillColor: "rgba(51, 51, 51, 0.55)",
-        data: {
-          labels: Object.keys(r),
-          datasets: [{
-            data: datalist,
-            backgroundColor: colors.slice(0, datalist.length),
-            hoverBackgroundColor: colors.slice(0, datalist.length)
-          }]
-        },
-        options: {
-          legend: !1,
-          responsive: !1
-        }
-      };
-      var content = "",
-        i = 0;
       datalist.forEach(function (item) {
-
-        content += "<tr>" + '<td><p><i class="fa fa-square" style="color:' + colors[i] + '"></i>' + Object.keys(r)[i] + "</p></td><td style='text-align:right'>" + makeNumber(item) + "</td> </tr>"
-        i++;
+        cont += '<div class="widget_summary"><div class="w_left w_25">' +
+          ' <span>' + Object.keys(r)[labelIndex] + '</span></div>' +
+          '<div class="w_center w_55"><div class="progress"><div class="progress-bar bg-green" role="progressbar" aria-valuenow="' + ((item / sum).toFixed(2))*100 + '" aria-valuemin="0"' +
+          'aria-valuemax="100" style="width:' + ((item / sum).toFixed(2))*100  + '%;"><!-- change width --> <span class = "sr-only" >Complete < /span> </div > </div> </div >' +
+          '<div class="w_right w_20"><span>' + ((item / sum ).toFixed(2))*100+ ' %</span></div><div class="clearfix"></div></div>';
+        labelIndex++;
       })
-      $("td .tile_info").append(content)
-      $(".policypieChart").each(function () {
-        var b = $(this);
-        new Chart(b, a)
-      })
-      /*   Highcharts.chart('policypieChart', {
-          chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'pie'
-          },
-          title: null,
-          plotOptions: {
-            pie: {
-              allowPointSelect: false,
-              cursor: 'pointer',
-              dataLabels: {
-                enabled: false,
-              },
-              showInLegend:true
-            }
-          },
-          series: [{
-            name: 'Brands',
-            colorByPoint: true,
-            data: datalist
-          }]
-        });
-        document.getElementById("policypieChart").getElementsByClassName("highcharts-credits")[0].remove() */
-
+      $("#bars").append(cont);
     })
   ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start" /* , "display_time", "stop_datetime", "attendee_ids", "location", "duration" */ ]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
     .then(function (res) {
@@ -360,7 +313,7 @@ $(function () {
         data: {
           labels: monthesNames,
           datasets: [{
-            label: "Policy Net permimum",
+            label: "Net permimum",
             backgroundColor: "rgba(38, 185, 154, 0.31)",
             borderColor: "rgba(38, 185, 154, 0.7)",
             pointBorderColor: "rgba(38, 185, 154, 0.7)",
@@ -395,9 +348,42 @@ $(function () {
       });
     })
   /* Bar Chart*/
-  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["id"])], 'issue_date', getThisYearMonthes(), '', true)
+  ajaxRequest(uid, password, "policy.broker", "search_read", [], [new Map("fields", ["t_permimum"])], '', [], false, true)
     .then(function (r) {
-      console.log("error==>", r)
+      var datalist = [],
+        labels = []
+      Object.keys(r).forEach(function (k) {
+        datalist.push(calcTotal(r[k]))
+      })
+
+      var a = {
+        type: "doughnut",
+        tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+        data: {
+          labels: Object.keys(r),
+          datasets: [{
+            data: datalist,
+            backgroundColor: colors.slice(0, datalist.length),
+            hoverBackgroundColor: colors.slice(0, datalist.length)
+          }]
+        },
+        options: {
+          legend: !1,
+          responsive: !1
+        }
+      };
+      var content = "",
+        i = 0;
+      datalist.forEach(function (item) {
+
+        content += "<tr>" + '<td><p><i class="fa fa-square" style="color:' + colors[i] + '"></i>' + Object.keys(r)[i] + "</p></td><td style='text-align:right'>" + makeNumber(item) + "</td> </tr>"
+        i++;
+      })
+      $("td .tile_info").append(content)
+      $(".policypieChart").each(function () {
+        var b = $(this);
+        new Chart(b, a)
+      })
     })
 });
 
@@ -500,7 +486,7 @@ function ajaxRequest(uid, password, modal, method, domains = [], mapList = [], m
       compColm: monthCompreColume,
       months: JSON.stringify(monthesdata),
       lob: JSON.stringify(lob),
-      ins: ins
+      ins: JSON.stringify(ins)
     },
     error: function (e) {
       console.log(e)
