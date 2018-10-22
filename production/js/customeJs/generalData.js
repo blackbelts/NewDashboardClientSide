@@ -321,9 +321,9 @@ $(function () {
             pointHoverBackgroundColor: "#fff",
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointBorderWidth: 1,
-            data: [50,100,50,200,150,300,250,400],
-            steppedLine: 'after',
-          },/*  {
+            data: data,
+            steppedLine: 'True',
+          }, {
             label: "Target Line",
             backgroundColor: "rgba(3, 88, 106, 0.3)",
             borderColor: "rgba(3, 88, 106, 0.70)",
@@ -333,7 +333,7 @@ $(function () {
             pointHoverBorderColor: "rgba(151,187,205,1)",
             pointBorderWidth: 1,
             data: [100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000]
-          }*/] 
+          }]
         },
         options: {
           responsive: true,
