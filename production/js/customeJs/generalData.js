@@ -20,6 +20,10 @@ var odooUrl = "http://178.128.197.205/odooApi/index.php?",
   graphlist = [],
   agentsNumber;
 $(function () {
+  if (window.matchMedia('(max-width: 992px)').matches) {
+    $("#policylineChart").get(0).height = 80;
+    $(".policypieChart").get(0).height = 80;
+  }
   getThisYearMonthes();
   /* 
    var domains = [];
@@ -112,14 +116,14 @@ $(function () {
       datalist.forEach(function (item) {
         cont += '<div class="widget_summary"><div class="w_left w_25">' +
           ' <span>' + Object.keys(r)[labelIndex] + '</span></div>' +
-          '<div class="w_center w_55"><div class="progress"><div class="progress-bar bg-green" role="progressbar" aria-valuenow="' + ((item / sum).toFixed(2))*100 + '" aria-valuemin="0"' +
-          'aria-valuemax="100" style="width:' + ((item / sum).toFixed(2))*100  + '%;"><!-- change width --> <span class = "sr-only" >Complete < /span> </div > </div> </div >' +
-          '<div class="w_right w_20"><span>' + ((item / sum ).toFixed(2))*100+ ' %</span></div><div class="clearfix"></div></div>';
+          '<div class="w_center w_55"><div class="progress"><div class="progress-bar bg-green" role="progressbar" aria-valuenow="' + ((item / sum).toFixed(2)) * 100 + '" aria-valuemin="0"' +
+          'aria-valuemax="100" style="width:' + ((item / sum).toFixed(2)) * 100 + '%;"><!-- change width --> <span class = "sr-only" >Complete < /span> </div > </div> </div >' +
+          '<div class="w_right w_20"><span>' + ((item / sum).toFixed(2)) * 100 + ' %</span></div><div class="clearfix"></div></div>';
         labelIndex++;
       })
       $("#bars").append(cont);
     })
-  ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start" /* , "display_time", "stop_datetime", "attendee_ids", "location", "duration" */ ]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
+  ajaxRequest(uid, password, "calendar.event", "search_read", [], [new Map("fields", ["name", "display_start" /* , "display_time", "stop_datetime", "attendee_ids", "location", "duration" */]), new Map("limit", ["5"]), new Map("order", ["display_start desc"])])
     .then(function (res) {
       var tableContent = "";
       var index = 0;
@@ -275,7 +279,7 @@ $(function () {
               } else {
                 if (ratio < 0) {
                   $("#leads .ratio i").attr("class", "red")
-                } else(
+                } else (
                   $("#leads .ratio i").attr("class", "green")
                 )
               }
@@ -309,7 +313,7 @@ $(function () {
       var lineChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: [1,2,3,4,5,6,7,8,9,10,11,12],
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
           datasets: [{
             label: "Net permimum",
             backgroundColor: "rgba(38, 185, 154, 0.31)",
@@ -413,7 +417,7 @@ function getValuesNewAdmin(conntId, modal, method, dom = [], m = [], month = [])
           } else {
             if (ratio < 0) {
               $(conntId + " .ratio i").attr("class", "red")
-            } else(
+            } else (
               $(conntId + " .ratio i").attr("class", "green")
             )
           }
@@ -474,7 +478,7 @@ function login(username, password) {
     error: function (e) {
       console.log(e)
     },
-    success: function (result) {}
+    success: function (result) { }
   })
 }
 
@@ -598,11 +602,11 @@ function getMonths() {
      * convert month date to MM-DD-YYYY HH:MM:SS 
      */
     monthsList.push([date.getMonth() + 1,
-      date.getDate(),
-      date.getFullYear()
+    date.getDate(),
+    date.getFullYear()
     ].join('-') + ' ' + [date.getHours(),
-      date.getMinutes(),
-      date.getSeconds()
+    date.getMinutes(),
+    date.getSeconds()
     ].join(':'));
     month--;
   }
@@ -630,11 +634,11 @@ function getThisYearMonthes() {
      * convert month date to MM-DD-YYYY HH:MM:SS 
      */
     monthsList.push([date.getMonth() + 1,
-      date.getDate(),
-      date.getFullYear()
+    date.getDate(),
+    date.getFullYear()
     ].join('-') + ' ' + [date.getHours(),
-      date.getMinutes(),
-      date.getSeconds()
+    date.getMinutes(),
+    date.getSeconds()
     ].join(':'));
     if (i == thisMonth + 1) {
       break

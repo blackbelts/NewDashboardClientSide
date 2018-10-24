@@ -35,15 +35,39 @@
     }
 
     .fixedHeight {
-      min-height: 330px;
+      min-height: 300px;
+    }
+
+    @media (max-width: 992px) {
+      .fixedHeight {
+        min-height: 0px;
+      }
+
+      .tile_count .tile_stats_count .count {
+        font-size: 24px;
+      }
+
+      .tile_count .tile_stats_count {
+        border-bottom: none;
+        margin-bottom: 20px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .tile_count .tile_stats_count .count {
+        font-size: 24px;
+      }
     }
 
     table.jambo_table thead {
       background: #265990
     }
-    table.tile_info td,table.tile_info td p{
+
+    table.tile_info td,
+    table.tile_info td p {
       font-size: 13px
     }
+
     .custome_x_panel {
       background: #f7f7f7;
       border: none;
@@ -64,9 +88,9 @@
       }
     }
 
-    @media (min-width: 768px) {
+    @media (max-width: 768px) {
       .tile_count .tile_stats_count .count {
-        font-size: 28px;
+        font-size: 22px;
       }
 
       .tile_count .tile_stats_count span {
@@ -77,16 +101,20 @@
         border-bottom: none
       }
     }
-    .progress{
+
+    .progress {
       height: 10px;
       margin-top: 5px;
     }
-    .bg-green{
+
+    .bg-green {
       background: #265990 !important
     }
-    .widget_summary .w_right span{
+
+    .widget_summary .w_right span {
       font-size: 13px
     }
+
     .custome_x_content {
       display: none;
       background-color: #fff;
@@ -185,7 +213,7 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                    <canvas id="policylineChart" height="250"></canvas>
+                    <canvas id="policylineChart" height="220"></canvas>
                   </div>
                 </div>
               </div>
