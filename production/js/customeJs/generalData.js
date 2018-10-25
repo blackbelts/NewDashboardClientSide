@@ -20,10 +20,15 @@ var odooUrl = "http://178.128.197.205/odooApi/index.php?",
   graphlist = [],
   agentsNumber;
 $(function () {
-  if (window.matchMedia('(max-width: 992px)').matches) {
+  if (window.matchMedia('(max-width: 775px)').matches) {
     $("#policylineChart").get(0).height = 210;
     $(".policypieChart").get(0).height = 135;
     $(".policypieChart").get(0).width=90
+  }else if (window.matchMedia('(max-width: 1024px)').matches ) {
+    $("#policylineChart").get(0).height = 160;
+    $(".policypieChart").get(0).height = 135;
+    $(".policypieChart").get(0).width=90
+    console.log(150)
   }
   getThisYearMonthes();
   /* 
